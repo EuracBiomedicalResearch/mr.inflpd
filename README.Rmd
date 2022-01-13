@@ -1,0 +1,301 @@
+---
+title: "Inflammation and Parkinson's disease using Mendelian randomization"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This repository contains the R scripts for reproducing the results of
+the study "__A Mendelian randomization study investigating the causal 
+role of inflammation on Parkinson’s disease__".
+
+# Setup
+
+Please install and download the latest R version (see [here](https://www.r-project.org/)) and the latest RStudio version (see [here](https://www.rstudio.com/products/rstudio/download/)).
+Additionally, please install the latest version of the following R packages on CRAN:
+
+```r
+install.packages(
+  c(
+    "tidyverse", "readxl", "janitor", "rsnps", "LDlinkR", 
+    "MendelianRandomization", "remotes"
+  ), 
+    dependencies = TRUE
+)
+```
+
+The latest version of the following R packages on Bioconductor 
+repository:
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("SNPlocs.Hsapiens.dbSNP144.GRCh37")
+```
+
+The latest version of the following R packages from source:
+
+```r
+remotes::install_github(c(
+  "MRCIEU/TwoSampleMR",
+  "MRCIEU/MRInstruments",
+  "gqi/MRMix",
+  "rondolab/MR-PRESSO"
+))
+```
+
+```r
+install_github(
+  "WSpiller/MRPracticals",
+  build_opts = c("--no-resave-data", "--no-manual"),
+  build_vignettes = TRUE
+)
+```
+
+The project contains one folder for each Mendelian randomization (MR)
+analysis that was performed in the study. The following instructions
+can be used to reproduce the results of each MR analysis. The sections
+will be labelled as the folders used in the project.
+
+Before running the scripts for reproducing the analysis, please make
+sure to do the following:
+
+1. Open the RStudio project `mr.inflpd.Rproj`.
+
+2. Download GWAS PD data from [here](https://drive.google.com/file/d/1FZ9UL99LAqyWnyNBxxlx6qOUlfAnublN/view). Store the file in the folder `pd\data-raw` and then run the
+script `pd\data-raw\01_data_import.R` to import GWAS PD data.
+
+3. Download GWAS AAO data from [here](https://drive.google.com/file/d/1n-6eOF6gaIxP9dLHx_QCndeaOQU2uhCf/view). Store the file in the folder `aao\data-raw`, unzip the file and
+run the script `aao\data-raw\01_data_import.R` to import GWAS AAO data.
+
+4. Set up a Personal Access Token to access LDlink API via `LDlinkR` R
+package. Instructions on how to do it can be found [here](https://cran.r-project.org/web/packages/LDlinkR/vignettes/LDlinkR.html).
+
+# ahluwalia_il6
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on IL-6 using data from [Ahluwalia et al. (2021)](https://academic.oup.com/hmg/article/30/5/393/6124523) study.
+
+Please, run the scripts as follows:
+
+1. Download the supplementary tables file from [here](https://academic.oup.com/hmg/article/30/5/393/6124523#supplementary-data) (IL6_GWAS_Supp_Tables_HMG_11012021_ddab023 - xlsx file). Then
+copy the data in the sheet labelled as "Table 1. IL6 GWAS sig. SNPs"
+and store them into `ahluwalia_il6\data-raw\instruments_ahluwalia.xlsx`
+
+2. Run the script `ahluwalia_il6\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `ahluwalia_il6\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `ahluwalia_il6\data\03_align_aoo_effects.R` to
+harmonize and prepare IL-6 and AAO data for MR analysis.
+
+5. Run the script `ahluwalia_il6\data\03_align_PD_effects.R` to
+harmonize and prepare IL-6 and PD data for MR analysis.
+
+6. Run the script `ahluwalia_il6\analysis\04_il6_aoo.R` to
+perform MR analyses for IL-6 and AAO.
+
+7. Run the script `ahluwalia_il6\analysis\04_il6_pd.R` to
+perform MR analyses for IL-6 and PD.
+
+# il6r_il6
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on IL-6 using data from [IL6R Genetics Consortium and Emerging Risk Factors Collaboration (2021)](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(11)61931-4/fulltext) study.
+
+Please, run the scripts as follows:
+
+1. Store the genetic association data of `rs2228145` with IL6 into `il6r_il6\data-raw\instruments_il6r.xlsx`
+
+2. Run the script `il6r_il6\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `il6r_il6\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `il6r_il6\data\03_align_aoo_effects.R` to
+harmonize and prepare IL-6 and AAO data for MR analysis.
+
+5. Run the script `il6r_il6\data\03_align_PD_effects.R` to
+harmonize and prepare IL-6 and PD data for MR analysis.
+
+6. Run the script `il6r_il6\analysis\04_il6_aoo.R` to
+perform MR analyses for IL-6 and AAO.
+
+7. Run the script `il6r_il6\analysis\04_il6_pd.R` to
+perform MR analyses for IL-6 and PD.
+
+# folkersen_il6
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on IL-6 using data from [Folkersen et al. (2020)](https://www.nature.com/articles/s42255-020-00287-2) study.
+
+Please, run the scripts as follows:
+
+1. Summary-statistics from Folkersen et al. GWAS can be found here [here](https://zenodo.org/record/2615265#.Ycrj71nSKUk). Download the
+`IL-6.txt.gz` file and store it into the folder `folkersen_il6\data-raw`
+
+2. Run the script `folkersen_il6\data-raw\01_data_import.R` to
+import the genetic associations data.
+
+3. Run the script `folkersen_il6\data-raw\02_tidy_instruments.R` to
+tidy summary-level GWAS data.
+
+4. Run the script `folkersen_il6\data\03_prepare_instruments.R` to
+instruments data for MR analysis.
+
+5. Run the script `folkersen_il6\data\04_align_PD_effects.R` to
+harmonize and prepare IL-6 and PD data for MR analysis.
+
+6. Run the script `folkersen_il6\data\04_align_aao_effects.R` to
+harmonize and prepare IL-6 and AAO data for MR analysis.
+
+7. Run the script `folkersen_il6\analysis\05_il6_aoo.R` to
+perform MR analyses for IL-6 and AAO.
+
+8. Run the script `folkersen_il6\analysis\05_il6_pd.R` to
+perform MR analyses for IL-6 and PD.
+
+# ccgc_crp
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on CRP using data from [CCGC (2011)](https://www.bmj.com/content/342/bmj.d548) study.
+
+Please, run the scripts as follows:
+
+1. Store the genetic association data from Figure 2 in the manuscript into `ccgc_crp\data-raw\instruments_ccgc.xlsx`
+
+2. Run the script `ccgc_crp\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `ccgc_crp\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `ccgc_crp\data\03_align_aoo_effects.R` to
+harmonize and prepare CRP and AAO data for MR analysis.
+
+5. Run the script `ccgc_crp\data\03_align_pd_effects.R` to
+harmonize and prepare CRP and PD data for MR analysis.
+
+6. Run the script `ccgc_crp\analysis\04_il6_aoo.R` to
+perform MR analyses for CRP and AAO.
+
+7. Run the script `ccgc_crp\analysis\04_il6_PD.R` to
+perform MR analyses for CRP and PD.
+
+# ligthart_crp
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on CRP using data from [Ligthart et al. (2018)](https://www.sciencedirect.com/science/article/pii/S0002929718303203) study.
+
+Please, run the scripts as follows:
+
+1. Store the genetic association data from the manuscript (Table 1) and
+Supplementary Table S3 into
+`ligthart_crp\data-raw\instruments_Ligthart.xlsx`
+
+2. Run the script `ligthart_crp\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `ligthart_crp\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `ligthart_crp\data\03_align_aoo_effects.R` to
+harmonize and prepare CRP and AAO data for MR analysis.
+
+5. Run the script `ligthart_crp\data\03_align_PD_effects.R` to
+harmonize and prepare CRP and PD data for MR analysis.
+
+6. Run the script `ligthart_crp\analysis\04_il6_aoo.R` to
+perform MR analyses for CRP and AAO.
+
+7. Run the script `ligthart_crp\analysis\04_il6_pd.R` to
+perform MR analyses for CRP and PD.
+
+# folkersen_il1ra
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on IL-6 using data from [Folkersen et al. (2020)](https://www.nature.com/articles/s42255-020-00287-2) study.
+
+Please, run the scripts as follows:
+
+1. Summary-statistics from Folkersen et al. GWAS can be found here [here](https://zenodo.org/record/2615265#.Ycrj71nSKUk). Download the
+`IL-1ra.txt.gz` file and store it into the folder `folkersen_il1ra\data-raw`
+
+2. Run the script `folkersen_il1ra\data-raw\01_data_import.R` to
+import the genetic associations data.
+
+3. Run the script `folkersen_il1ra\data-raw\02_tidy_instruments.R` to
+tidy summary-level GWAS data.
+
+4. Run the script `folkersen_il1ra\data\03_prepare_instruments.R` to
+instruments data for MR analysis.
+
+5. Run the script `folkersen_il1ra\data\04_align_PD_effects.R` to
+harmonize and prepare IL-1ra and PD data for MR analysis.
+
+6. Run the script `folkersen_il1ra\data\04_align_aao_effects.R` to
+harmonize and prepare IL-1ra and AAO data for MR analysis.
+
+7. Run the script `folkersen_il1ra\analysis\05_il1ra_aoo.R` to
+perform MR analyses for IL-1ra and AAO.
+
+8. Run the script `folkersen_il1ra\analysis\05_il1ra_pd.R` to
+perform MR analyses for IL-1ra and PD.
+
+# herder_il1ra
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on IL-1ra using data from [Herder et al. (2014)](https://diabetesjournals.org/diabetes/article/63/12/4343/40454/Genetic-Determinants-of-Circulating-Interleukin-1) study.
+
+Please, run the scripts as follows:
+
+1. Store the genetic association data from the manuscript (Table 2) into `herder_il1ra\data-raw\instruments_herder.xlsx`
+
+2. Run the script `herder_il1ra\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `herder_il1ra\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `herder_il1ra\data\03_align_aoo_effects.R` to
+harmonize and prepare IL-1ra and AAO data for MR analysis.
+
+5. Run the script `herder_il1ra\data\03_align_PD_effects.R` to
+harmonize and prepare IL-1ra and PD data for MR analysis.
+
+6. Run the script `herder_il1ra\analysis\04_il1ra_aoo.R` to
+perform MR analyses for IL-1ra and AAO.
+
+7. Run the script `il6r_il6\analysis\04_il1ra_pd.R` to
+perform MR analyses for IL-1ra and PD.
+
+# prins_tnfalpha
+The folder contains the R scripts that can be used to reproduce the
+MR analysis on TNF-alpha using data from [Prins (2016)](https://research.rug.nl/en/publications/inflammatory-biomarker-genomics-from-discovery-to-causality) study.
+
+Please, run the scripts as follows:
+
+1. Store the genetic association data from Table 2 in the manuscript into `prins_tnfalpha\data-raw\instruments_tnf.xlsx`. The manuscript can be
+found [here](https://pure.rug.nl/ws/portalfiles/portal/35098958/Chapter_3_.pdf).
+
+2. Run the script `prins_tnfalpha\data-raw\01_import_instruments.R` to
+import the genetic associations data.
+
+3. Run the script `prins_tnfalpha\data\02_tidy_instruments.R` to
+clean and select genetic variants for the analysis.
+
+4. Run the script `prins_tnfalpha\data\03_align_aoo_effects.R` to
+harmonize and prepare TNF-alpha and AAO data for MR analysis.
+
+5. Run the script `prins_tnfalpha\data\03_align_pd_effects.R` to
+harmonize and prepare TNF-alpha and PD data for MR analysis.
+
+6. Run the script `prins_tnfalpha\analysis\04_tnf_aoo.R` to
+perform MR analyses for TNF-alpha and AAO.
+
+7. Run the script `prins_tnfalpha\analysis\04_tnf_PD.R` to
+perform MR analyses for TNF-alpha and PD.
+

@@ -1,0 +1,329 @@
+---
+title: "MR Inflammation-PD - Figures and tables main"
+output:
+  word_document:
+    fig_caption: TRUE
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r}
+library(tidyverse)
+library(MendelianRandomization)
+library(TwoSampleMR)
+library(knitr)
+library(officer)
+library(flextable)
+library(patchwork)
+library(ggpubr)
+theme_set(theme_light())
+
+autonum <- run_autonum(post_label = ". ")
+
+# Load the results of the paper ----------------------------------------
+load(here::here("all", "paper_results.rda"))
+```
+
+```{r}
+# PD estimates ---------------------------------------------------------
+pd_primary_res <- tibble(
+  exposure = c(
+    rep("CRP", 2L), rep("IL-6", 3L), rep("IL-1ra", 2L), 
+    paste("TNF-", "\U03B1", sep = "")
+  ),
+  source = c(
+    "Ligthart et al.", "CCGC", "Ahluwalia et al.", "IL6R Consortium",
+    "Folkersen et al. IL-6", "Herder et al.", "Folkersen et al. IL-1ra", 
+    "Prins et al."
+  ),
+  est = c(
+    ligthart_results$pd$primary$mr_results$ivw$estimate$est,
+    ccgc_results$pd$primary$mr_results$est,
+    ahluwalia_results$pd$primary$mr_results@Estimate,
+    il6r_results$pd$primary$mr_results$est,
+    folkersen_results$pd$primary$mr_results@Estimate,
+    herder_results$pd$primary$mr_results$est,
+    il1ra_results$pd$primary$mr_results$ivw$estimate$est,
+    tnf_results$pd$primary$mr_results$est
+  ),
+  lower = c(
+    ligthart_results$pd$primary$mr_results$ivw$estimate$lower,
+    ccgc_results$pd$primary$mr_results$lower,
+    ahluwalia_results$pd$primary$mr_results@CILower,
+    il6r_results$pd$primary$mr_results$lower,
+    folkersen_results$pd$primary$mr_results@CILower,
+    herder_results$pd$primary$mr_results$lower,
+    il1ra_results$pd$primary$mr_results$ivw$estimate$lower,
+    tnf_results$pd$primary$mr_results$lower
+  ),
+  upper = c(
+    ligthart_results$pd$primary$mr_results$ivw$estimate$upper,
+    ccgc_results$pd$primary$mr_results$upper,
+    ahluwalia_results$pd$primary$mr_results@CIUpper,
+    il6r_results$pd$primary$mr_results$upper,
+    folkersen_results$pd$primary$mr_results@CIUpper,
+    herder_results$pd$primary$mr_results$upper,
+    il1ra_results$pd$primary$mr_results$ivw$estimate$upper,
+    tnf_results$pd$primary$mr_results$upper
+  ),
+  pval = c(
+    ligthart_results$pd$primary$mr_results$ivw$estimate$pval,
+    ccgc_results$pd$primary$mr_results$pval,
+    ahluwalia_results$pd$primary$mr_results@Pvalue,
+    il6r_results$pd$primary$mr_results$`P-value`,
+    folkersen_results$pd$primary$mr_results@Pvalue,
+    herder_results$pd$primary$mr_results$pval,
+    il1ra_results$pd$primary$mr_results$ivw$estimate$pval,
+    tnf_results$pd$primary$mr_results$pval
+  )
+) %>% 
+  mutate(
+    across(c(est, lower, upper), ~ round(exp(.x), 3L)),
+    outcome = "Parkinson's disease"
+  ) %>% 
+  mutate(source = factor(source, levels = .$source))
+
+# AAO ------------------------------------------------------------------
+aao_primary_res <- tibble(
+  exposure = c(
+    rep("CRP", 2L), rep("IL-6", 3L), rep("IL-1ra", 2L), 
+    paste("TNF-", "\U03B1", sep = "")
+  ),
+  source = c(
+    "Ligthart et al.", "CCGC", "Ahluwalia et al.", "IL6R Consortium",
+    "Folkersen et al. IL-6", "Herder et al.", "Folkersen et al. IL-1ra", 
+    "Prins et al."
+  ),
+  est = c(
+    ligthart_results$aao$primary$mr_results$ivw$estimate$est,
+    ccgc_results$aao$primary$mr_results$est,
+    ahluwalia_results$aao$primary$mr_results@Estimate,
+    il6r_results$aao$primary$mr_results$est,
+    folkersen_results$aao$primary$mr_results@Estimate,
+    herder_results$aao$primary$mr_results$est,
+    il1ra_results$aao$primary$mr_results$ivw$estimate$est,
+    tnf_results$aao$primary$mr_results$est
+  ),
+  lower = c(
+    ligthart_results$aao$primary$mr_results$ivw$estimate$lower,
+    ccgc_results$aao$primary$mr_results$lower,
+    ahluwalia_results$aao$primary$mr_results@CILower,
+    il6r_results$aao$primary$mr_results$lower,
+    folkersen_results$aao$primary$mr_results@CILower,
+    herder_results$aao$primary$mr_results$lower,
+    il1ra_results$aao$primary$mr_results$ivw$estimate$lower,
+    tnf_results$aao$primary$mr_results$lower
+  ),
+  upper = c(
+    ligthart_results$aao$primary$mr_results$ivw$estimate$upper,
+    ccgc_results$aao$primary$mr_results$upper,
+    ahluwalia_results$aao$primary$mr_results@CIUpper,
+    il6r_results$aao$primary$mr_results$upper,
+    folkersen_results$aao$primary$mr_results@CIUpper,
+    herder_results$aao$primary$mr_results$upper,
+    il1ra_results$aao$primary$mr_results$ivw$estimate$upper,
+    tnf_results$aao$primary$mr_results$upper
+  ),
+  pval = c(
+    ligthart_results$aao$primary$mr_results$ivw$estimate$pval,
+    ccgc_results$aao$primary$mr_results$pval,
+    ahluwalia_results$aao$primary$mr_results@Pvalue,
+    il6r_results$aao$primary$mr_results$pval,
+    folkersen_results$aao$primary$mr_results@Pvalue,
+    herder_results$aao$primary$mr_results$pval,
+    il1ra_results$aao$primary$mr_results$ivw$estimate$pval,
+    tnf_results$aao$primary$mr_results$pval
+  )
+) %>% 
+  mutate(
+    outcome = "Age at onset of Parkinson's disease"
+  ) %>% 
+  mutate(source = factor(source, levels = .$source))
+```
+
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 2 main"}
+fig_pd <- ggplot(
+  data = pd_primary_res,
+  mapping = aes(
+    x = source, y = est, ymin = lower, ymax = upper,
+    colour = exposure
+  )
+) +
+  geom_point(size = 0.7) +
+  geom_pointrange(size = 0.7) +
+  geom_hline(mapping = aes(yintercept = 1), linetype = "dashed") +
+  xlab("Data source") +
+  ylab("OR") +
+  scale_color_discrete(name = "Exposure") +
+  scale_x_discrete(
+    labels = c(
+      "Ligthart et al." = "Ligthart et al.",
+      "CCGC" = "CCGC",
+      "Ahluwalia et al." = "Ahluwalia et al.",
+      "IL6R Consortium" = "IL6R Consortium",
+      "Folkersen et al. IL-6" = "Folkersen et al.",
+      "Herder et al." = "Herder et al.",
+      "Folkersen et al. IL-1ra" = "Folkersen et al.",
+      "Prins et al." = "Prins et al."
+    )
+  ) +
+  ggtitle("Parkinson's disease") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(
+  filename = here::here("all", "fig2.tiff"),
+  plot = fig_pd,
+  height = 6, width = 10,
+  dpi = 300
+)
+
+fig_pd
+```
+
+```{r, fig.width = 12, fig.height = 8, fig.cap = "Figure 3 main"}
+fig_aao <- ggplot(
+  data = aao_primary_res,
+  mapping = aes(
+    x = source, y = est, ymin = lower, ymax = upper,
+    colour = exposure
+  )
+) +
+  geom_point(size = 0.7) +
+  geom_pointrange(size = 0.7) +
+  geom_hline(mapping = aes(yintercept = 0), linetype = "dashed") +
+  xlab("Data source") +
+  ylab("Expected years difference") +
+  scale_color_discrete(name = "Exposure") +
+  scale_x_discrete(
+    labels = c(
+      "Ligthart et al." = "Ligthart et al.",
+      "CCGC" = "CCGC",
+      "Ahluwalia et al." = "Ahluwalia et al.",
+      "IL6R Consortium" = "IL6R Consortium",
+      "Folkersen et al. IL-6" = "Folkersen et al.",
+      "Herder et al." = "Herder et al.",
+      "Folkersen et al. IL-1ra" = "Folkersen et al.",
+      "Prins et al." = "Prins et al."
+    )
+  ) +
+  ggtitle("Age at onset of Parkinson's disease") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+ggsave(
+  filename = here::here("all", "fig3.tiff"),
+  plot = fig_aao,
+  height = 6, width = 10,
+  dpi = 300
+)
+
+fig_aao
+```
+
+```{r}
+tibble(
+  Exposure = c(
+    rep("CRP", 2L), rep("IL-6", 3L), rep("IL-1ra", 2L), "TNF-alpha"
+  ),
+  Reference = c(
+    "Ligthart et al.", "CCGC", "Ahluwalia et al.", "IL6R Consortium",
+    "Folkersen et al. (SCALLOP)", "Herder et al.",
+    "Folkersen et al. (SCALLOP)", "Prins"
+  ),
+  `N of IVs` = c(
+    nrow(ligthart_results$pd$primary$data),
+    nrow(ccgc_results$pd$primary$data),
+    nrow(ahluwalia_results$pd$primary$data),
+    nrow(il6r_results$pd$primary$data),
+    nrow(folkersen_results$pd$primary$data),
+    nrow(herder_results$pd$primary$data),
+    nrow(il1ra_results$pd$primary$data),
+    nrow(tnf_results$pd$primary$data)
+  ),
+  `F-statistic` = c(
+    ligthart_results$pd$primary$statistics$f_stat,
+    ccgc_results$pd$primary$mr_results$`F-statistic`,
+    ahluwalia_results$pd$primary$statistics$f_stat,
+    il6r_results$pd$primary$mr_results$`F-statistic`,
+    folkersen_results$pd$primary$statistics$f_stat,
+    herder_results$pd$primary$mr_results$`F-statistic`,
+    il1ra_results$pd$primary$statistics$f_stat,
+    tnf_results$pd$primary$mr_results$`F-statistic`
+  ),
+  `Overall R^2` = round(c(
+    ligthart_results$pd$primary$statistics$r2,
+    ccgc_results$pd$primary$mr_results$`R^2`,
+    ahluwalia_results$pd$primary$statistics$r2,
+    il6r_results$pd$primary$mr_results$`R^2`,
+    folkersen_results$pd$primary$statistics$r2,
+    herder_results$pd$primary$mr_results$`R^2`,
+    il1ra_results$pd$primary$statistics$r2,
+    tnf_results$pd$primary$mr_results$R2
+  ) * 100, 1L)
+) |> 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Description of genetic instruments used in primary MR analysis",
+    autonum = autonum
+  )
+```
+
+
+```{r}
+pd_primary_res %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(
+    `OR (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(
+    Exposure = exposure,
+    `Data source` = source,
+    `P-value` = pval
+  ) %>% 
+  dplyr::select(Exposure, `Data source`, `OR (95% CI)`, `P-value`) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "MR primary analysis results for PD",
+    autonum = autonum
+  )
+```
+
+```{r}
+aao_primary_res %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(across(c(est, lower, upper), ~ round(.x, 3L))) %>% 
+  mutate(
+    `Estimate (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(
+    Exposure = exposure,
+    `Data source` = source,
+    `P-value` = pval
+  ) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `Estimate (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "MR primary analysis results for AAO",
+    autonum = autonum
+  )
+```

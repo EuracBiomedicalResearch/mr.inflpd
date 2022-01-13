@@ -1,0 +1,1135 @@
+---
+title: "MR Inflammation-PD - Tables and figures supplementary"
+output:
+  word_document:
+    fig_caption: TRUE
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r}
+library(tidyverse)
+library(MendelianRandomization)
+library(TwoSampleMR)
+library(knitr)
+library(meta)
+library(officer)
+library(flextable)
+library(patchwork)
+theme_set(theme_light())
+
+autonum <- run_autonum(post_label = ". ")
+
+# Load the results of the paper ----------------------------------------
+load(here::here("all", "paper_results.rda"))
+```
+
+# Supplementary files
+
+## Tables
+
+### Harmonized datasets
+
+```{r}
+# CRP - PD -------------------------------------------------------------
+bind_rows(
+  ligthart_results$pd$primary$data %>% 
+    dplyr::mutate(
+      source = "Ligthart et al.",
+      Position_x = as.character(Position_x)
+    ),
+  ccgc_results$pd$primary$data %>% 
+    dplyr::mutate(
+      source = "CCGC",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for CRP and Parkinson's
+    disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# CRP - AAO ------------------------------------------------------------
+bind_rows(
+  ligthart_results$aao$primary$data %>% 
+    dplyr::mutate(
+      source = "Ligthart et al.",
+      Position_x = as.character(Position_x)
+    ),
+  ccgc_results$aao$primary$data %>% 
+    dplyr::mutate(
+      source = "CCGC",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for CRP and AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL6 - PD -------------------------------------------------------------
+bind_rows(
+  ahluwalia_results$pd$primary$data %>% 
+    mutate(
+      source = "Ahluwalia et al.",
+      Position_x = as.character(Position_x)
+    ),
+  il6r_results$pd$primary$data %>% 
+    mutate(
+      source = "IL6R Genetic Consortium", 
+      Position_x = as.character(Position_x)
+    ),
+  folkersen_results$pd$primary$data %>% 
+    mutate(
+      source = "Folkersen et al. IL-6",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for IL-6 and Parkinson's
+    disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL-6 - AAO ------------------------------------------------------------
+bind_rows(
+  ahluwalia_results$aao$primary$data %>% 
+    mutate(
+      source = "Ahluwalia et al.",
+      Position_x = as.character(Position_x)
+    ),
+  il6r_results$aao$primary$data %>% 
+    mutate(
+      source = "IL6R Genetic Consortium", 
+      Position_x = as.character(Position_x)
+    ),
+  folkersen_results$aao$primary$data %>% 
+    mutate(
+      source = "Folkersen et al. IL-6",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closestgene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for IL-6 and AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL-1ra - AAO ---------------------------------------------------------
+bind_rows(
+  il1ra_results$pd$primary$data %>% 
+    dplyr::mutate(
+      source = "Folkersen et al. IL-1ra",
+      Position_x = as.character(Position_x)
+    ),
+  herder_results$pd$primary$data %>% 
+    dplyr::mutate(
+      source = "Herder et al.",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for IL-1ra and Parkinson's disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL-1ra - AAO ---------------------------------------------------------
+bind_rows(
+  il1ra_results$aao$primary$data %>% 
+    dplyr::mutate(
+      source = "Folkersen et al. IL-1ra",
+      Position_x = as.character(Position_x)
+    ),
+  herder_results$aao$primary$data %>% 
+    dplyr::mutate(
+      source = "Herder et al.",
+      Position_x = as.character(Position_x)
+    )
+) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for IL-1ra and AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# TNF-alpha - PD -------------------------------------------------------
+tnf_results$pd$primary$data %>% 
+  dplyr::mutate(
+      source = "Prins et al.",
+      Position_x = as.character(Position_x)
+    ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for TNF-alpha and Parkinson's disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# TNF-alpha - PD -------------------------------------------------------
+tnf_results$aao$primary$data %>% 
+  dplyr::mutate(
+      source = "Prins et al.",
+      Position_x = as.character(Position_x)
+    ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for TNF-alpha and AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# CRP - PD sens --------------------------------------------------------
+ligthart_results$pd$sens$data %>% 
+  dplyr::mutate(
+    source = "Ligthart et al.",
+    Position_x = as.character(Position_x)
+  ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Sensitivity MR analysis harmonized data for CRP and
+    Parkinson's disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# CRP - AAO ------------------------------------------------------------
+ligthart_results$aao$sens$data %>% 
+  dplyr::mutate(
+    source = "Ligthart et al.",
+    Position_x = as.character(Position_x)
+  ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Sensitivity MR analysis harmonized data for CRP and
+    AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL6 - PD sensitivity -------------------------------------------------
+bind_rows(
+  ahluwalia_results$pd$sens$data %>% 
+    mutate(
+      source = "Ahluwalia et al.",
+      Position_x = as.character(Position_x),
+      Closest_gene = "IL6R"
+    ),
+  folkersen_results$pd$sens$data %>% 
+    mutate(
+      source = "Folkersen et al.",
+      Position_x = as.character(Position_x),
+      Closest_gene = "IL6R"
+    )
+) %>%  
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Primary MR analysis harmonized data for IL-6 and Parkinson's
+    disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# IL-6 - AAO sensitivity -----------------------------------------------
+bind_rows(
+  ahluwalia_results$aao$sens$data %>% 
+    mutate(
+      source = "Ahluwalia et al.",
+      Position_x = as.character(Position_x),
+      Closest_gene = "IL6R"
+    ),
+  folkersen_results$aao$sens$data %>% 
+    mutate(
+      source = "Folkersen et al.",
+      Position_x = as.character(Position_x),
+      Closest_gene = "IL6R"
+    )
+) %>%  
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Sensitivity MR analysis harmonized data for IL-6 and
+    AAO",
+    autonum = autonum
+  )
+```
+
+```{r}
+# TNF-alpha - PD sensitivity -------------------------------------------
+tnf_results$pd$sens$data %>% 
+  dplyr::mutate(
+      source = "Prins et al.",
+      Position_x = as.character(Position_x)
+    ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Sensitivity MR analysis harmonized data for TNF-alpha and Parkinson's disease",
+    autonum = autonum
+  )
+```
+
+```{r}
+# TNF-alpha - AAO sensitivity ------------------------------------------
+tnf_results$aao$sens$data %>% 
+  dplyr::mutate(
+      source = "Prins et al.",
+      Position_x = as.character(Position_x)
+    ) %>% 
+  dplyr::select(
+    source, SNP, Closest_gene, Chromosome_x, Position_x, A1_x, A2_x,
+    freq_x, beta_x, se_x, p_x, beta_y, se_y, p_y
+  ) %>% 
+  dplyr::mutate(
+    across(c(beta_x, se_x, beta_y, se_y), ~ round(.x, 5L)),
+    across(c(p_x, p_y), ~ format(.x, scientific = TRUE)),
+    freq_x = round(freq_x, 3L)
+  ) %>% 
+  dplyr::rename(
+    `Data source` = source,
+    `Closest gene` = Closest_gene, 
+    Chromosome = Chromosome_x, 
+    `Position (GRCh37)` = Position_x,
+    `Effect allele` = A1_x,
+    `Reference allele` = A2_x,
+    EAF = freq_x,
+    `Beta (exposure)` = beta_x,
+    `S.E. (exposure)` = se_x,
+    `P-value (exposure)` = p_x,
+    `Beta (outcome)` = beta_y,
+    `S.E. (outcome)` = se_y,
+    `P-value (outcome)` = p_y
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "Sensitivity MR analysis harmonized data for TNF-alpha and AAO",
+    autonum = autonum
+  )
+```
+
+### Results secondary analyses
+
+```{r}
+# PD estimates secondary -----------------------------------------------
+pd_secondary_res <- tibble(
+  Exposure = c(rep("CRP", 4L), rep("IL-1ra", 4L)),
+  `Data source` = c(rep("Ligthart et al.", 4L), rep("Folkersen et al.", 4L)),
+  `MR method` = rep(
+    c("MR-Egger", "Weighted median", "Weighted mode", "MR-PRESSO"),
+    2L
+  ),
+  est = c(
+    ligthart_results$pd$primary$mr_results$egger$estimate$est,
+    ligthart_results$pd$primary$mr_results$mr_median$estimate$est,
+    ligthart_results$pd$primary$mr_results$mr_mode$estimate$est,
+    ligthart_results$pd$primary$mr_results$presso$estimate$est[2],
+    il1ra_results$pd$primary$mr_results$egger$estimate$est,
+    il1ra_results$pd$primary$mr_results$mr_median$estimate$est,
+    il1ra_results$pd$primary$mr_results$mr_mode$estimate$est,
+    il1ra_results$pd$primary$mr_results$presso$estimate$est[2]
+  ),
+  lower = c(
+    ligthart_results$pd$primary$mr_results$egger$estimate$lower,
+    ligthart_results$pd$primary$mr_results$mr_median$estimate$lower,
+    ligthart_results$pd$primary$mr_results$mr_mode$estimate$lower,
+    ligthart_results$pd$primary$mr_results$presso$estimate$lower[2],
+    il1ra_results$pd$primary$mr_results$egger$estimate$lower,
+    il1ra_results$pd$primary$mr_results$mr_median$estimate$lower,
+    il1ra_results$pd$primary$mr_results$mr_mode$estimate$lower,
+    il1ra_results$pd$primary$mr_results$presso$estimate$lower[2]
+  ),
+  upper = c(
+    ligthart_results$pd$primary$mr_results$egger$estimate$upper,
+    ligthart_results$pd$primary$mr_results$mr_median$estimate$upper,
+    ligthart_results$pd$primary$mr_results$mr_mode$estimate$upper,
+    ligthart_results$pd$primary$mr_results$presso$estimate$upper[2],
+    il1ra_results$pd$primary$mr_results$egger$estimate$upper,
+    il1ra_results$pd$primary$mr_results$mr_median$estimate$upper,
+    il1ra_results$pd$primary$mr_results$mr_mode$estimate$upper,
+    il1ra_results$pd$primary$mr_results$presso$estimate$upper[2]
+  ),
+  pval = c(
+    ligthart_results$pd$primary$mr_results$egger$estimate$pval,
+    ligthart_results$pd$primary$mr_results$mr_median$estimate$pval,
+    ligthart_results$pd$primary$mr_results$mr_mode$estimate$pval,
+    ligthart_results$pd$primary$mr_results$presso$estimate$pval[2],
+    il1ra_results$pd$primary$mr_results$egger$estimate$pval,
+    il1ra_results$pd$primary$mr_results$mr_median$estimate$pval,
+    il1ra_results$pd$primary$mr_results$mr_mode$estimate$pval,
+    il1ra_results$pd$primary$mr_results$presso$estimate$pval[2]
+  )
+) %>% 
+  mutate(
+    across(c(est, lower, upper), ~ round(exp(.x), 3L)),
+    outcome = "Parkinson's disease"
+  )
+
+# AAO ------------------------------------------------------------------
+aao_secondary_res <- tibble(
+  Exposure = c(rep("CRP", 4L), rep("IL-1ra", 4L)),
+  `Data source` = c(rep("Ligthart et al.", 4L), rep("Folkersen et al.", 4L)),
+  `MR method` = rep(
+    c("MR-Egger", "Weighted median", "Weighted mode", "MR-PRESSO"),
+    2L
+  ),
+  est = c(
+    ligthart_results$aao$primary$mr_results$egger$estimate$est,
+    ligthart_results$aao$primary$mr_results$mr_median$estimate$est,
+    ligthart_results$aao$primary$mr_results$mr_mode$estimate$est,
+    ligthart_results$aao$primary$mr_results$presso$estimate$est[2],
+    il1ra_results$aao$primary$mr_results$egger$estimate$est,
+    il1ra_results$aao$primary$mr_results$mr_median$estimate$est,
+    il1ra_results$aao$primary$mr_results$mr_mode$estimate$est,
+    il1ra_results$aao$primary$mr_results$presso$estimate$est[2]
+  ),
+  lower = c(
+    ligthart_results$aao$primary$mr_results$egger$estimate$lower,
+    ligthart_results$aao$primary$mr_results$mr_median$estimate$lower,
+    ligthart_results$aao$primary$mr_results$mr_mode$estimate$lower,
+    ligthart_results$aao$primary$mr_results$presso$estimate$lower[2],
+    il1ra_results$aao$primary$mr_results$egger$estimate$lower,
+    il1ra_results$aao$primary$mr_results$mr_median$estimate$lower,
+    il1ra_results$aao$primary$mr_results$mr_mode$estimate$lower,
+    il1ra_results$aao$primary$mr_results$presso$estimate$lower[2]
+  ),
+  upper = c(
+    ligthart_results$aao$primary$mr_results$egger$estimate$upper,
+    ligthart_results$aao$primary$mr_results$mr_median$estimate$upper,
+    ligthart_results$aao$primary$mr_results$mr_mode$estimate$upper,
+    ligthart_results$aao$primary$mr_results$presso$estimate$upper[2],
+    il1ra_results$aao$primary$mr_results$egger$estimate$upper,
+    il1ra_results$aao$primary$mr_results$mr_median$estimate$upper,
+    il1ra_results$aao$primary$mr_results$mr_mode$estimate$upper,
+    il1ra_results$aao$primary$mr_results$presso$estimate$upper[2]
+  ),
+  pval = c(
+    ligthart_results$aao$primary$mr_results$egger$estimate$pval,
+    ligthart_results$aao$primary$mr_results$mr_median$estimate$pval,
+    ligthart_results$aao$primary$mr_results$mr_mode$estimate$pval,
+    ligthart_results$aao$primary$mr_results$presso$estimate$pval[2],
+    il1ra_results$aao$primary$mr_results$egger$estimate$pval,
+    il1ra_results$aao$primary$mr_results$mr_median$estimate$pval,
+    il1ra_results$aao$primary$mr_results$mr_mode$estimate$pval,
+    il1ra_results$aao$primary$mr_results$presso$estimate$pval[2]
+  )
+) %>% 
+  mutate(outcome = "AAO")
+```
+
+```{r}
+pd_secondary_res %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(
+    `OR (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `MR method`, `OR (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  footnote(
+    i = 1, j = 4,
+    value = as_paragraph(
+      "If MR-PRESSO results are set to NA, no outlier was identified and
+      the final estimate equals the primary analysis estimate."
+    ),
+    ref_symbols = "a",
+    part = "header", inline = TRUE
+  ) %>% 
+  set_caption(
+    caption = "MR secondary analysis results for PD",
+    autonum = autonum
+  )
+```
+ 
+```{r}
+aao_secondary_res %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(across(c(est, lower, upper), ~ round(.x, 3L))) %>% 
+  mutate(
+    `Estimate (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `MR method`, `Estimate (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  autofit() %>%
+  footnote(
+    i = 1, j = 4,
+    value = as_paragraph(
+      "If MR-PRESSO results are set to NA, no outlier was identified and
+      the final estimate equals the primary analysis estimate."
+    ),
+    ref_symbols = "a",
+    part = "header", inline = TRUE
+  ) %>% 
+  set_caption(
+    caption = "MR secondary analysis results for AAO",
+    autonum = autonum
+  )
+```
+
+### Results sensitivity
+
+```{r}
+# PD estimates primary sensitivity -----------------------------------
+pd_primary_sens <- tibble(
+  Exposure = c("CRP", "IL-6", "IL-6", "TNF-alpha"),
+  `Data source` = c(
+    "Ligthart et al.", "Ahluwalia et al.", "Folkersen et al.", 
+    "Prins et al."
+  ),
+  est = c(
+    ligthart_results$pd$sens$mr_results$ivw$estimate$est,
+    ahluwalia_results$pd$sens$mr_results@Estimate,
+    folkersen_results$pd$sens$mr_results@Estimate,
+    tnf_results$pd$sens$mr_results$est
+  ),
+  lower = c(
+    ligthart_results$pd$sens$mr_results$ivw$estimate$lower,
+    ahluwalia_results$pd$sens$mr_results@CILower,
+    folkersen_results$pd$sens$mr_results@CILower,
+    tnf_results$pd$sens$mr_results$lower
+  ),
+  upper = c(
+    ligthart_results$pd$sens$mr_results$ivw$estimate$upper,
+    ahluwalia_results$pd$sens$mr_results@CIUpper,
+    folkersen_results$pd$sens$mr_results@CIUpper,
+    tnf_results$pd$sens$mr_results$upper
+  ),
+  pval = c(
+    ligthart_results$pd$sens$mr_results$ivw$estimate$pval,
+    ahluwalia_results$pd$sens$mr_results@Pvalue,
+    folkersen_results$pd$sens$mr_results@Pvalue,
+    tnf_results$pd$sens$mr_results$pval
+  )
+) %>% 
+  mutate(
+    across(c(est, lower, upper), ~ round(exp(.x), 3L)),
+    outcome = "Parkinson's disease"
+  )
+
+# AAO ------------------------------------------------------------------
+aao_primary_sens <- tibble(
+  Exposure = c("CRP", "IL-6", "IL-6", "TNF-alpha"),
+  `Data source` = c(
+    "Ligthart et al.", "Ahluwalia et al.", "Folkersen et al.", 
+    "Prins et al."
+  ),
+  est = c(
+    ligthart_results$aao$sens$mr_results$ivw$estimate$est,
+    ahluwalia_results$aao$sens$mr_results@Estimate,
+    folkersen_results$aao$sens$mr_results@Estimate,
+    tnf_results$aao$sens$mr_results$est
+  ),
+  lower = c(
+    ligthart_results$aao$sens$mr_results$ivw$estimate$lower,
+    ahluwalia_results$aao$sens$mr_results@CILower,
+    folkersen_results$aao$sens$mr_results@CILower,
+    tnf_results$aao$sens$mr_results$lower
+  ),
+  upper = c(
+    ligthart_results$aao$sens$mr_results$ivw$estimate$upper,
+    ahluwalia_results$aao$sens$mr_results@CIUpper,
+    folkersen_results$aao$sens$mr_results@CIUpper,
+    tnf_results$aao$sens$mr_results$upper
+  ),
+  pval = c(
+    ligthart_results$aao$sens$mr_results$ivw$estimate$pval,
+    ahluwalia_results$aao$sens$mr_results@Pvalue,
+    folkersen_results$aao$sens$mr_results@Pvalue,
+    tnf_results$aao$sens$mr_results$pval
+  )
+) %>% 
+  mutate(outcome = "AAO")
+```
+
+```{r}
+pd_primary_sens %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(
+    `OR (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `OR (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "MR primary analysis results on sensitivity for PD",
+    autonum = autonum
+  )
+```
+ 
+```{r}
+aao_primary_sens %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(across(c(est, lower, upper), ~ round(.x, 3L))) %>% 
+  mutate(
+    `Estimate (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `Estimate (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>%
+  set_caption(
+    caption = "MR primary analysis results on sensitivity for AAO",
+    autonum = autonum
+  )
+```
+
+
+### Results secondary analyses on sensitivity
+
+```{r}
+# PD estimates secondary sensitivity -----------------------------------
+pd_secondary_sens <- tibble(
+  Exposure = rep("CRP", 4L), 
+  `Data source` = rep("Ligthart et al.", 4L),
+  `MR method` = c(
+    "MR-Egger", "Weighted median", "Weighted mode", "MR-PRESSO"
+  ),
+  est = c(
+    ligthart_results$pd$sens$mr_results$egger$estimate$est,
+    ligthart_results$pd$sens$mr_results$mr_median$estimate$est,
+    ligthart_results$pd$sens$mr_results$mr_mode$estimate$est,
+    ligthart_results$pd$sens$mr_results$presso$estimate$est[2]
+  ),
+  lower = c(
+    ligthart_results$pd$sens$mr_results$egger$estimate$lower,
+    ligthart_results$pd$sens$mr_results$mr_median$estimate$lower,
+    ligthart_results$pd$sens$mr_results$mr_mode$estimate$lower,
+    ligthart_results$pd$sens$mr_results$presso$estimate$lower[2]
+  ),
+  upper = c(
+    ligthart_results$pd$sens$mr_results$egger$estimate$upper,
+    ligthart_results$pd$sens$mr_results$mr_median$estimate$upper,
+    ligthart_results$pd$sens$mr_results$mr_mode$estimate$upper,
+    ligthart_results$pd$sens$mr_results$presso$estimate$upper[2]
+  ),
+  pval = c(
+    ligthart_results$pd$sens$mr_results$egger$estimate$pval,
+    ligthart_results$pd$sens$mr_results$mr_median$estimate$pval,
+    ligthart_results$pd$sens$mr_results$mr_mode$estimate$pval,
+    ligthart_results$pd$sens$mr_results$presso$estimate$pval[2]
+  )
+) %>% 
+  mutate(
+    across(c(est, lower, upper), ~ round(exp(.x), 3L)),
+    outcome = "Parkinson's disease"
+  )
+
+# AAO ------------------------------------------------------------------
+aao_secondary_sens <- tibble(
+  Exposure = rep("CRP", 4L), 
+  `Data source` = rep("Ligthart et al.", 4L),
+  `MR method` = c(
+    "MR-Egger", "Weighted median", "Weighted mode", "MR-PRESSO"
+  ),
+  est = c(
+    ligthart_results$aao$sens$mr_results$egger$estimate$est,
+    ligthart_results$aao$sens$mr_results$mr_median$estimate$est,
+    ligthart_results$aao$sens$mr_results$mr_mode$estimate$est,
+    ligthart_results$aao$sens$mr_results$presso$estimate$est[2]
+  ),
+  lower = c(
+    ligthart_results$aao$sens$mr_results$egger$estimate$lower,
+    ligthart_results$aao$sens$mr_results$mr_median$estimate$lower,
+    ligthart_results$aao$sens$mr_results$mr_mode$estimate$lower,
+    ligthart_results$aao$sens$mr_results$presso$estimate$lower[2]
+  ),
+  upper = c(
+    ligthart_results$aao$sens$mr_results$egger$estimate$upper,
+    ligthart_results$aao$sens$mr_results$mr_median$estimate$upper,
+    ligthart_results$aao$sens$mr_results$mr_mode$estimate$upper,
+    ligthart_results$aao$sens$mr_results$presso$estimate$upper[2]
+  ),
+  pval = c(
+    ligthart_results$aao$sens$mr_results$egger$estimate$pval,
+    ligthart_results$aao$sens$mr_results$mr_median$estimate$pval,
+    ligthart_results$aao$sens$mr_results$mr_mode$estimate$pval,
+    ligthart_results$aao$sens$mr_results$presso$estimate$pval[2]
+  )
+) %>% 
+  mutate(outcome = "AAO")
+```
+
+```{r}
+pd_secondary_sens %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(
+    `OR (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `MR method`, `OR (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  footnote(
+    i = 1, j = 4,
+    value = as_paragraph(
+      "If MR-PRESSO results are set to NA, no outlier was identified and
+      the final estimate equals the primary analysis estimate."
+    ),
+    ref_symbols = "a",
+    part = "header", inline = TRUE
+  ) %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "MR secondary analysis results on sensitivity for PD",
+    autonum = autonum
+  )
+```
+ 
+```{r}
+aao_secondary_sens %>% 
+  dplyr::select(-outcome) %>% 
+  mutate(across(c(est, lower, upper), ~ round(.x, 3L))) %>% 
+  mutate(
+    `Estimate (95% CI)` = glue::glue("{est} ({lower}; {upper})"),
+    pval = if_else(
+      pval < 0.001, "<0.001",
+      as.character(round(pval, 3L))
+    )
+  ) %>% 
+  dplyr::rename(`P-value` = pval) %>% 
+  dplyr::select(
+    Exposure, `Data source`, `MR method`, `Estimate (95% CI)`, `P-value`
+  ) %>% 
+  flextable() %>% 
+  footnote(
+    i = 1, j = 4,
+    value = as_paragraph(
+      "If MR-PRESSO results are set to NA, no outlier was identified and
+      the final estimate equals the primary analysis estimate."
+    ),
+    ref_symbols = "a",
+    part = "header", inline = TRUE
+  )  %>% 
+  autofit() %>% 
+  set_caption(
+    caption = "MR secondary analysis results on sensitivity for AAO",
+    autonum = autonum
+  )
+```
+
+### Biological pleiotropy lookup
+
+```{r}
+ligthart_results$pd$sens$pleiotropic_snps$lookup %>% 
+  dplyr::select(
+    snp, hg19_coordinates, trait, trait_macro, study, beta, se, p 
+  ) %>% 
+  flextable() %>%
+  autofit() %>% 
+  set_caption(
+    caption = "Pleiotropy lookup for CRP-PD",
+    autonum = autonum
+  )
+```
+
+```{r}
+bind_rows(
+  ahluwalia_results$pd$sens$pleiotropic_snps$lookup,
+  folkersen_results$pd$sens$pleiotropic_snps
+) %>% 
+  dplyr::select(
+    snp, hg19_coordinates, trait, trait_macro, study, beta, se, p 
+  ) %>% 
+  flextable() %>%
+  autofit() %>% 
+  set_caption(
+    caption = "Pleiotropy lookup for IL6-PD",
+    autonum = autonum
+  )
+```
+
+```{r}
+tnf_results$pd$sens$pleiotropic_snps$lookup %>% 
+  dplyr::select(
+    snp, hg19_coordinates, trait, trait_macro, study, beta, se, p 
+  ) %>% 
+  flextable() %>%
+  autofit() %>% 
+  set_caption(
+    caption = "Pleiotropy lookup for TNF-alpha-PD",
+    autonum = autonum
+  )
+```

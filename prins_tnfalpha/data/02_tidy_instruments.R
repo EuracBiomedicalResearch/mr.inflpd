@@ -29,6 +29,7 @@ tab_1 <- instr %>%
   arrange(Pvalue)
 
 # 3) LD clumping -------------------------------------------------------
+# 3A) R2<0.001 ---------------------------------------------------------
 ld <- SNPclip(
   snps = tab_1$SNP[c(2, 3)],
   pop = "CEU",
@@ -39,6 +40,32 @@ ld <- SNPclip(
 
 r2_0001 <- tab_1 %>%
   filter(!SNP %in% ld[ld$Details != "Variant kept.", 1])
+
+# 3B) R2<0.01 ----------------------------------------------------------
+ld <- SNPclip(
+  snps = tab_1$SNP[c(2, 3)],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+r2_001 <- tab_1 %>%
+  filter(!SNP %in% ld[ld$Details != "Variant kept.", 1])
+
+# 3C) R2<0.1 -----------------------------------------------------------
+ld <- SNPclip(
+  snps = tab_1$SNP[c(2, 3)],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+r2_01 <- tab_1 %>%
+  filter(!SNP %in% ld[ld$Details != "Variant kept.", 1])
+
+# Same set of IVs for each LD clumping threshold.
 
 # 4) Save the data -----------------------------------------------------
 save(

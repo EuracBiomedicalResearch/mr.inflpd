@@ -332,8 +332,8 @@ Please, run the scripts as follows:
 
 # Workflow reproducibility
 
-The workflow of the analysis is guaranteed to be reproducible with R
-version 4.1.2 and the following packages versions:
+Reproducibility of the analyses can be achieved using R version 4.1.2
+and the following packages versions:
 
 ``` r
 library(tidyverse)

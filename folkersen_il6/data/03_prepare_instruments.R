@@ -5,6 +5,7 @@ library(openxlsx)
 library(LDlinkR)
 library(SNPlocs.Hsapiens.dbSNP144.GRCh37)
 library(rsnps)
+library(TwoSampleMR)
 
 load(here::here("folkersen_il6", "data", "iv_data.rda"))
 
@@ -86,7 +87,8 @@ snps <- tab_1 %>%
   # Add the Gene
   dplyr::mutate(Gene = ncbi_snp_query(snps = .$SNP)$gene)
 
-# 3) Perform LD clumping (r2<0.001)-------------------------------------
+# 3) Perform LD clumping -----------------------------------------------
+# 3A) (r2<0.001)--------------------------------------------------------
 ld_ch1 <- SNPclip(
   snps = snps$SNP[snps$Chromosome == 1],
   pop = "CEU",
@@ -111,8 +113,58 @@ ch6 <- snps %>%
 
 r2_0001 <- bind_rows(ch1, ch6) %>% dplyr::select(-rg)
 
-# 3) Save the data -----------------------------------------------------
+# 3B) (r2<0.01)--------------------------------------------------------
+ld_ch1 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 1],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch1 <- snps %>%
+  filter(SNP %in% ld_ch1[ld_ch1$Details == "Variant kept.", 1])
+
+ld_ch6 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 6],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch6 <- snps %>%
+  filter(SNP %in% ld_ch6[ld_ch6$Details == "Variant kept.", 1])
+
+r2_001 <- bind_rows(ch1, ch6) %>% dplyr::select(-rg)
+
+# 3C) (r2<0.1)----------------------------------------------------------
+ld_ch1 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 1],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch1 <- snps %>%
+  filter(SNP %in% ld_ch1[ld_ch1$Details == "Variant kept.", 1])
+
+ld_ch6 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 6],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch6 <- snps %>%
+  filter(SNP %in% ld_ch6[ld_ch6$Details == "Variant kept.", 1])
+
+r2_01 <- bind_rows(ch1, ch6) %>% dplyr::select(-rg)
+
+# 4) Save the data -----------------------------------------------------
 save(
-  r2_0001,
+  r2_0001, r2_001, r2_01,
   file = here::here("folkersen_il6", "data", "tidied_instruments.rda")
 )

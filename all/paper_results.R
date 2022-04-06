@@ -9,23 +9,52 @@
 load(here::here("ligthart_crp", "analysis", "mr_results_pd.rda"))
 load(here::here("ligthart_crp", "analysis", "mr_results_aao.rda"))
 ligthart_results <- list(
-  "pd" = list("primary" = primary_pd, "sens" = sensitivity_pd),
+  "pd" = list(
+    "primary_r2_0001" = primary_pd_r2_0001,
+    "sens_r2_0001" = sensitivity_pd_r2_0001,
+    "primary_r2_001" = primary_pd_r2_001,
+    "sens_r2_001" = sensitivity_pd_r2_001,
+    "primary_r2_01" = primary_pd_r2_01,
+    "sens_r2_01" = sensitivity_pd_r2_01
+  ),
   "aao" = list(
-    "primary" = primary_aao, "sens" = sensitivity_aao
+    "primary_r2_0001" = primary_aao_r2_0001,
+    "sens_r2_0001" = sensitivity_aao_r2_0001,
+    "primary_r2_001" = primary_aao_r2_001,
+    "sens_r2_001" = sensitivity_aao_r2_001,
+    "primary_r2_01" = primary_aao_r2_01,
+    "sens_r2_01" = sensitivity_aao_r2_01
   )
 )
 
-rm(primary_pd, primary_aao, sensitivity_pd, sensitivity_aao)
+rm(
+  primary_pd_r2_0001, primary_aao_r2_0001,
+  sensitivity_pd_r2_0001, sensitivity_aao_r2_0001,
+  primary_pd_r2_001, primary_aao_r2_001,
+  sensitivity_pd_r2_001, sensitivity_aao_r2_001,
+  primary_pd_r2_01, primary_aao_r2_01,
+  sensitivity_pd_r2_01, sensitivity_aao_r2_01
+)
 
 # 1B) CCGC -------------------------------------------------------------
 load(here::here("ccgc_crp", "analysis", "mr_results_pd.rda"))
 load(here::here("ccgc_crp", "analysis", "mr_results_aao.rda"))
 
 ccgc_results <- list(
-  "pd" = list("primary" = primary_pd), "aao" = list("primary" = primary_aao)
+  "pd" = list(
+    "primary_r2_0001" = primary_pd_r2_0001,
+    "primary_r2_01" = primary_pd_r2_01
+  ),
+  "aao" = list(
+    "primary_r2_0001" = primary_aao_r2_0001,
+    "primary_r2_01" = primary_aao_r2_01
+  )
 )
 
-rm(primary_pd, primary_aao)
+rm(
+  primary_pd_r2_0001, primary_aao_r2_0001,
+  primary_pd_r2_01, primary_aao_r2_01
+)
 
 # 2) IL-6 --------------------------------------------------------------
 # 2A) Ahluwalia et al. -------------------------------------------------
@@ -33,11 +62,26 @@ load(here::here("ahluwalia_il6", "analysis", "mr_results_pd.rda"))
 load(here::here("ahluwalia_il6", "analysis", "mr_results_aao.rda"))
 
 ahluwalia_results <- list(
-  "pd" = list("primary" = primary_pd, "sens" = sensitivity_pd),
-  "aao" = list("primary" = primary_aao, "sens" = sensitivity_aao)
+  "pd" = list(
+    "primary_r2_0001" = primary_pd_r2_0001,
+    "sens_r2_0001" = sensitivity_pd_r2_0001,
+    "primary_r2_01" = primary_pd_r2_01,
+    "sens_r2_01" = sensitivity_pd_r2_01
+  ),
+  "aao" = list(
+    "primary_r2_0001" = primary_aao_r2_0001,
+    "sens_r2_0001" = sensitivity_aao_r2_0001,
+    "primary_r2_01" = primary_aao_r2_01,
+    "sens_r2_01" = sensitivity_aao_r2_01
+  )
 )
 
-rm(primary_pd, primary_aao, sensitivity_pd, sensitivity_aao)
+rm(
+  primary_pd_r2_0001, primary_aao_r2_0001,
+  sensitivity_pd_r2_0001, sensitivity_aao_r2_0001,
+  primary_pd_r2_01, primary_aao_r2_01,
+  sensitivity_pd_r2_01, sensitivity_aao_r2_01
+)
 
 ## 2B) IL6R Genetic consortium -----------------------------------------
 load(here::here("il6r_il6", "analysis", "results_pd.rda"))
@@ -54,11 +98,26 @@ load(here::here("folkersen_il6", "analysis", "mr_results_pd.rda"))
 load(here::here("folkersen_il6", "analysis", "mr_results_aao.rda"))
 
 folkersen_results <- list(
-  "pd" = list("primary" = primary_pd, "sens" = sensitivity_pd),
-  "aao" = list("primary" = primary_aao, "sens" = sensitivity_aao)
+  "pd" = list(
+    "primary_r2_0001" = primary_pd_r2_0001,
+    "sens_r2_0001" = sensitivity_pd_r2_0001,
+    "primary_r2_01" = primary_pd_r2_01,
+    "sens_r2_01" = sensitivity_pd_r2_01
+  ),
+  "aao" = list(
+    "primary_r2_0001" = primary_aao_r2_0001,
+    "sens_r2_0001" = sensitivity_aao_r2_0001,
+    "primary_r2_01" = primary_aao_r2_01,
+    "sens_r2_01" = sensitivity_aao_r2_01
+  )
 )
 
-rm(primary_pd, primary_aao, sensitivity_pd, sensitivity_aao)
+rm(
+  primary_pd_r2_0001, primary_aao_r2_0001,
+  sensitivity_pd_r2_0001, sensitivity_aao_r2_0001,
+  primary_pd_r2_01, primary_aao_r2_01,
+  sensitivity_pd_r2_01, sensitivity_aao_r2_01
+)
 
 # 3) IL-1ra ------------------------------------------------------------
 ## 3A) Folkersen -------------------------------------------------------
@@ -66,11 +125,26 @@ load(here::here("folkersen_il1ra", "analysis", "mr_results_pd.rda"))
 load(here::here("folkersen_il1ra", "analysis", "mr_results_aao.rda"))
 
 il1ra_results <- list(
-  "pd" = list("primary" = primary_pd, "sens" = sensitivity_pd),
-  "aao" = list("primary" = primary_aao, "sens" = sensitivity_aao)
+  "pd" = list(
+    "primary_r2_0001" = primary_pd_r2_0001,
+    "sens_r2_0001" = sensitivity_pd_r2_0001,
+    "primary_r2_01" = primary_pd_r2_01,
+    "sens_r2_01" = sensitivity_pd_r2_01
+  ),
+  "aao" = list(
+    "primary_r2_0001" = primary_aao_r2_0001,
+    "sens_r2_0001" = sensitivity_aao_r2_0001,
+    "primary_r2_01" = primary_aao_r2_01,
+    "sens_r2_01" = sensitivity_aao_r2_01
+  )
 )
 
-rm(primary_pd, primary_aao, sensitivity_pd,sensitivity_aao)
+rm(
+  primary_pd_r2_0001, primary_aao_r2_0001,
+  sensitivity_pd_r2_0001, sensitivity_aao_r2_0001,
+  primary_pd_r2_01, primary_aao_r2_01,
+  sensitivity_pd_r2_01, sensitivity_aao_r2_01
+)
 
 ## 3B) Herder ----------------------------------------------------------
 load(here::here("herder_il1ra", "analysis", "mr_results_pd.rda"))

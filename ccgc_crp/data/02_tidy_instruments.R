@@ -28,7 +28,8 @@ tab_1 <- instr %>%
   mutate(chr_pos = glue::glue("{Chromosome}_{Position}")) %>%
   arrange(P_value)
 
-# 2) LD clumping (r2<0.001) --------------------------------------------
+# 2) LD clumping -------------------------------------------------------
+# 2A) R2<0.001 ---------------------------------------------------------
 ld <- SNPclip(
   snps = tab_1$SNP,
   pop = "CEU",
@@ -40,8 +41,32 @@ ld <- SNPclip(
 r2_0001 <- tab_1 %>%
   filter(SNP %in% ld[ld$Details == "Variant kept.", 1])
 
+# 2B) R2<0.01 ----------------------------------------------------------
+ld <- SNPclip(
+  snps = tab_1$SNP,
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+r2_001 <- tab_1 %>%
+  filter(SNP %in% ld[ld$Details == "Variant kept.", 1])
+
+# 2C) R2<0.1 -----------------------------------------------------------
+ld <- SNPclip(
+  snps = tab_1$SNP,
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+r2_01 <- tab_1 %>%
+  filter(SNP %in% ld[ld$Details == "Variant kept.", 1])
+
 # 3) Save into the data ------------------------------------------------
 save(
-  r2_0001,
+  r2_0001, r2_001, r2_01,
   file = here::here("ccgc_crp", "data", "tidied_instruments.rda")
 )

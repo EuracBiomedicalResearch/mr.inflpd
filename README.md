@@ -329,3 +329,239 @@ Please, run the scripts as follows:
 
 7.  Run the script `prins_tnfalpha\analysis\04_tnf_PD.R` to perform MR
     analyses for TNF-alpha and PD.
+
+# Workflow reproducibility
+
+The workflow of the analysis is guaranteed to be reproducible with R
+version 4.1.2 and the following packages versions:
+
+``` r
+library(tidyverse)
+#> -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+#> v ggplot2 3.3.5     v purrr   0.3.4
+#> v tibble  3.1.6     v dplyr   1.0.8
+#> v tidyr   1.2.0     v stringr 1.4.0
+#> v readr   2.1.2     v forcats 0.5.1
+#> -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+#> x dplyr::filter() masks stats::filter()
+#> x dplyr::lag()    masks stats::lag()
+library(MendelianRandomization)
+#> Warning in .recacheSubclasses(def@className, def, env): undefined subclass
+#> "numericVector" of class "Mnumeric"; definition not updated
+library(TwoSampleMR)
+#> TwoSampleMR version 0.5.6 
+#> [>] New: Option to use non-European LD reference panels for clumping etc
+#> [>] Some studies temporarily quarantined to verify effect allele
+#> [>] See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for further details
+#> 
+#> Attaching package: 'TwoSampleMR'
+#> The following objects are masked from 'package:MendelianRandomization':
+#> 
+#>     mr_ivw, mr_median
+library(knitr)
+library(meta)
+#> Loading 'meta' package (version 5.2-0).
+#> Type 'help(meta)' for a brief overview.
+#> Readers of 'Meta-Analysis with R (Use R!)' should install
+#> older version of 'meta' package: https://tinyurl.com/dt4y5drs
+library(officer)
+library(flextable)
+#> Warning: package 'flextable' was built under R version 4.1.3
+#> 
+#> Attaching package: 'flextable'
+#> The following object is masked from 'package:purrr':
+#> 
+#>     compose
+library(patchwork)
+library(readxl)
+#> 
+#> Attaching package: 'readxl'
+#> The following object is masked from 'package:officer':
+#> 
+#>     read_xlsx
+library(janitor)
+#> 
+#> Attaching package: 'janitor'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     chisq.test, fisher.test
+library(SNPlocs.Hsapiens.dbSNP144.GRCh37)
+#> Loading required package: BSgenome
+#> Loading required package: BiocGenerics
+#> 
+#> Attaching package: 'BiocGenerics'
+#> The following object is masked from 'package:flextable':
+#> 
+#>     width
+#> The following objects are masked from 'package:dplyr':
+#> 
+#>     combine, intersect, setdiff, union
+#> The following objects are masked from 'package:stats':
+#> 
+#>     IQR, mad, sd, var, xtabs
+#> The following objects are masked from 'package:base':
+#> 
+#>     anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+#>     dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+#>     grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+#>     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+#>     rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+#>     union, unique, unsplit, which.max, which.min
+#> Loading required package: S4Vectors
+#> Loading required package: stats4
+#> 
+#> Attaching package: 'S4Vectors'
+#> The following object is masked from 'package:MendelianRandomization':
+#> 
+#>     values
+#> The following objects are masked from 'package:dplyr':
+#> 
+#>     first, rename
+#> The following object is masked from 'package:tidyr':
+#> 
+#>     expand
+#> The following objects are masked from 'package:base':
+#> 
+#>     expand.grid, I, unname
+#> Loading required package: IRanges
+#> 
+#> Attaching package: 'IRanges'
+#> The following object is masked from 'package:TwoSampleMR':
+#> 
+#>     trim
+#> The following objects are masked from 'package:dplyr':
+#> 
+#>     collapse, desc, slice
+#> The following object is masked from 'package:purrr':
+#> 
+#>     reduce
+#> The following object is masked from 'package:grDevices':
+#> 
+#>     windows
+#> Loading required package: GenomeInfoDb
+#> Loading required package: GenomicRanges
+#> Loading required package: Biostrings
+#> Loading required package: XVector
+#> 
+#> Attaching package: 'XVector'
+#> The following object is masked from 'package:purrr':
+#> 
+#>     compact
+#> 
+#> Attaching package: 'Biostrings'
+#> The following object is masked from 'package:base':
+#> 
+#>     strsplit
+#> Loading required package: rtracklayer
+library(rsnps)
+library(openxlsx)
+library(LDlinkR)
+library(MRMix)
+library(MRPRESSO)
+library(MRPracticals)
+
+si <- sessionInfo()
+print(si, locale = FALSE)
+#> R version 4.1.2 (2021-11-01)
+#> Platform: x86_64-w64-mingw32/x64 (64-bit)
+#> Running under: Windows 10 x64 (build 19044)
+#> 
+#> Matrix products: default
+#> 
+#> attached base packages:
+#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  
+#> [8] base     
+#> 
+#> other attached packages:
+#>  [1] MRPracticals_0.0.1                      
+#>  [2] MRPRESSO_1.0                            
+#>  [3] MRMix_0.1.0                             
+#>  [4] LDlinkR_1.1.2                           
+#>  [5] openxlsx_4.2.5                          
+#>  [6] rsnps_0.5.0.0                           
+#>  [7] SNPlocs.Hsapiens.dbSNP144.GRCh37_0.99.20
+#>  [8] BSgenome_1.62.0                         
+#>  [9] rtracklayer_1.54.0                      
+#> [10] Biostrings_2.62.0                       
+#> [11] XVector_0.34.0                          
+#> [12] GenomicRanges_1.46.0                    
+#> [13] GenomeInfoDb_1.30.0                     
+#> [14] IRanges_2.28.0                          
+#> [15] S4Vectors_0.32.2                        
+#> [16] BiocGenerics_0.40.0                     
+#> [17] janitor_2.1.0                           
+#> [18] readxl_1.3.1                            
+#> [19] patchwork_1.1.1                         
+#> [20] flextable_0.7.0                         
+#> [21] officer_0.4.1                           
+#> [22] meta_5.2-0                              
+#> [23] knitr_1.37                              
+#> [24] TwoSampleMR_0.5.6                       
+#> [25] MendelianRandomization_0.6.0            
+#> [26] forcats_0.5.1                           
+#> [27] stringr_1.4.0                           
+#> [28] dplyr_1.0.8                             
+#> [29] purrr_0.3.4                             
+#> [30] readr_2.1.2                             
+#> [31] tidyr_1.2.0                             
+#> [32] tibble_3.1.6                            
+#> [33] ggplot2_3.3.5                           
+#> [34] tidyverse_1.3.1                         
+#> 
+#> loaded via a namespace (and not attached):
+#>   [1] uuid_1.0-4                  backports_1.4.1            
+#>   [3] systemfonts_1.0.4           plyr_1.8.6                 
+#>   [5] lazyeval_0.2.2              splines_4.1.2              
+#>   [7] mr.raps_0.2                 gmp_0.6-4                  
+#>   [9] BiocParallel_1.28.0         digest_0.6.29              
+#>  [11] foreach_1.5.2               htmltools_0.5.2            
+#>  [13] fansi_1.0.2                 magrittr_2.0.2             
+#>  [15] tzdb_0.2.0                  modelr_0.1.8               
+#>  [17] matrixStats_0.61.0          colorspace_2.0-3           
+#>  [19] rvest_1.0.2                 haven_2.4.3                
+#>  [21] xfun_0.30                   crayon_1.5.0               
+#>  [23] RCurl_1.98-1.6              jsonlite_1.8.0             
+#>  [25] lme4_1.1-28                 survival_3.2-13            
+#>  [27] iterators_1.0.14            glue_1.6.2                 
+#>  [29] gtable_0.3.0                zlibbioc_1.40.0            
+#>  [31] MatrixModels_0.5-0          DelayedArray_0.20.0        
+#>  [33] shape_1.4.6                 DEoptimR_1.0-10            
+#>  [35] SparseM_1.81                scales_1.1.1               
+#>  [37] DBI_1.1.2                   Rcpp_1.0.8.2               
+#>  [39] viridisLite_0.4.0           glmnet_4.1-3               
+#>  [41] htmlwidgets_1.5.4           httr_1.4.2                 
+#>  [43] ellipsis_0.3.2              pkgconfig_2.0.3            
+#>  [45] XML_3.99-0.9                iterpc_0.4.2               
+#>  [47] dbplyr_2.1.1                utf8_1.2.2                 
+#>  [49] crul_1.2.0                  tidyselect_1.1.2           
+#>  [51] rlang_1.0.2                 munsell_0.5.0              
+#>  [53] cellranger_1.1.0            tools_4.1.2                
+#>  [55] cli_3.1.1                   generics_0.1.2             
+#>  [57] broom_0.7.12                mathjaxr_1.6-0             
+#>  [59] evaluate_0.15               fastmap_1.1.0              
+#>  [61] yaml_2.3.5                  fs_1.5.2                   
+#>  [63] zip_2.2.0                   arrangements_1.1.9         
+#>  [65] robustbase_0.93-9           nlme_3.1-153               
+#>  [67] quantreg_5.88               xml2_1.3.3                 
+#>  [69] compiler_4.1.2              rstudioapi_0.13            
+#>  [71] plotly_4.10.0               curl_4.3.2                 
+#>  [73] reprex_2.0.1                stringi_1.7.6              
+#>  [75] gdtools_0.2.4               lattice_0.20-45            
+#>  [77] Matrix_1.4-2                nloptr_2.0.0               
+#>  [79] vctrs_0.3.8                 CompQuadForm_1.4.3         
+#>  [81] pillar_1.7.0                lifecycle_1.0.1            
+#>  [83] data.table_1.14.2           bitops_1.0-7               
+#>  [85] R6_2.5.1                    BiocIO_1.4.0               
+#>  [87] codetools_0.2-18            boot_1.3-28                
+#>  [89] MASS_7.3-54                 assertthat_0.2.1           
+#>  [91] SummarizedExperiment_1.24.0 rjson_0.2.21               
+#>  [93] withr_2.5.0                 nortest_1.0-4              
+#>  [95] httpcode_0.3.0              GenomicAlignments_1.30.0   
+#>  [97] metafor_3.0-2               Rsamtools_2.10.0           
+#>  [99] GenomeInfoDbData_1.2.7      parallel_4.1.2             
+#> [101] hms_1.1.1                   grid_4.1.2                 
+#> [103] minqa_1.2.4                 rmarkdown_2.13             
+#> [105] snakecase_0.11.0            MatrixGenerics_1.6.0       
+#> [107] Biobase_2.54.0              lubridate_1.8.0            
+#> [109] base64enc_0.1-3             restfulr_0.0.13
+```

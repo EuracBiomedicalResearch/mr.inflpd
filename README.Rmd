@@ -299,3 +299,29 @@ perform MR analyses for TNF-alpha and AAO.
 7. Run the script `prins_tnfalpha\analysis\04_tnf_PD.R` to
 perform MR analyses for TNF-alpha and PD.
 
+# Workflow reproducibility
+The workflow of the analysis is guaranteed to be reproducible with R version 4.1.2 and the following packages versions:
+
+```{r}
+library(tidyverse)
+library(MendelianRandomization)
+library(TwoSampleMR)
+library(knitr)
+library(meta)
+library(officer)
+library(flextable)
+library(patchwork)
+library(readxl)
+library(janitor)
+library(SNPlocs.Hsapiens.dbSNP144.GRCh37)
+library(rsnps)
+library(openxlsx)
+library(LDlinkR)
+library(MRMix)
+library(MRPRESSO)
+library(MRPracticals)
+
+si <- sessionInfo()
+print(si, locale = FALSE)
+```
+

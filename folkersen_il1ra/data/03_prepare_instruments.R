@@ -77,6 +77,7 @@ snps <- tab_1 %>%
   mutate(Gene = ncbi_snp_query(snps = .$SNP)$gene)
 
 # 3) LD clumping -------------------------------------------------------
+# R2<0.001 -------------------------------------------------------------
 ld_ch2 <- SNPclip(
   snps = snps$SNP[snps$Chromosome == 2],
   pop = "CEU",
@@ -112,9 +113,81 @@ ch19 <- snps %>%
 
 r2_0001 <- bind_rows(ch2, ch17, ch19)
 
+# R2<0.01 --------------------------------------------------------------
+ld_ch2 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 2],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch2 <- snps %>%
+  filter(SNP %in% ld_ch2[ld_ch2$Details == "Variant kept.", 1])
+
+ld_ch17 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 17],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch17 <- snps %>%
+  filter(SNP %in% ld_ch17[ld_ch17$Details == "Variant kept.", 1])
+
+ld_ch19 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 19],
+  pop = "CEU",
+  r2_threshold = "0.01",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch19 <- snps %>%
+  filter(SNP %in% ld_ch19[ld_ch19$Details == "Variant kept.", 1])
+
+r2_001 <- bind_rows(ch2, ch17, ch19)
+
+# R2<0.1 --------------------------------------------------------------
+ld_ch2 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 2],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch2 <- snps %>%
+  filter(SNP %in% ld_ch2[ld_ch2$Details == "Variant kept.", 1])
+
+ld_ch17 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 17],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch17 <- snps %>%
+  filter(SNP %in% ld_ch17[ld_ch17$Details == "Variant kept.", 1])
+
+ld_ch19 <- SNPclip(
+  snps = snps$SNP[snps$Chromosome == 19],
+  pop = "CEU",
+  r2_threshold = "0.1",
+  maf_threshold = "0.01",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+ch19 <- snps %>%
+  filter(SNP %in% ld_ch19[ld_ch19$Details == "Variant kept.", 1])
+
+r2_01 <- bind_rows(ch2, ch17, ch19)
+
 # 3) Save into the data ------------------------------------------------
 save(
-  r2_0001,
+  r2_0001, r2_001, r2_01,
   file = here::here(
     "folkersen_il1ra", "data", "tidied_instruments.rda"
   )

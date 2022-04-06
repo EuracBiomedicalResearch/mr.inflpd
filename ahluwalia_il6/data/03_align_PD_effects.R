@@ -2,6 +2,7 @@
 library(tidyverse)
 library(readr)
 library(LDlinkR)
+library(TwoSampleMR)
 
 # 1) Load PD and IL-6 data ---------------------------------------------
 load(here::here("pd", "data", "nalls2019_data.rda"))
@@ -41,7 +42,7 @@ pd_data <- ma %>%
   )
 
 # 3) Consistent column names -------------------------------------------
-instr_mr <- r2_0001 %>%
+instr_mr_r2_0001 <- r2_0001 %>%
   rename(
     A1_x = Effect_allele,
     A2_x = Reference_allele,
@@ -61,30 +62,97 @@ instr_mr <- r2_0001 %>%
     freq_x,
     beta_x,
     se_x,
-    p_x
+    p_x,
+    F_statistic,
+    R_2
   )
 
-# 4) Select instruments from PD data -----------------------------------
-instr_nm <- instr_mr$chr_pos
+instr_mr_r2_001 <- r2_001 %>%
+  rename(
+    A1_x = Effect_allele,
+    A2_x = Reference_allele,
+    freq_x = EAF,
+    beta_x = Beta,
+    se_x = SE,
+    p_x = P_value
+  ) %>%
+  dplyr::select(
+    SNP,
+    Gene,
+    chr_pos,
+    Chromosome_x,
+    Position_x,
+    A1_x,
+    A2_x,
+    freq_x,
+    beta_x,
+    se_x,
+    p_x,
+    F_statistic,
+    R_2
+  )
 
-pd_df <- pd_data %>%
-  filter(chr_pos %in% instr_nm)
+instr_mr_r2_01 <- r2_01 %>%
+  rename(
+    A1_x = Effect_allele,
+    A2_x = Reference_allele,
+    freq_x = EAF,
+    beta_x = Beta,
+    se_x = SE,
+    p_x = P_value
+  ) %>%
+  dplyr::select(
+    SNP,
+    Gene,
+    chr_pos,
+    Chromosome_x,
+    Position_x,
+    A1_x,
+    A2_x,
+    freq_x,
+    beta_x,
+    se_x,
+    p_x,
+    F_statistic,
+    R_2
+  )
 
-# Join IL-6 and PD data -------------------------------------------------
-lj <- instr_mr %>%
-  left_join(pd_df, by = "chr_pos")
+# 4) Select instruments from AAO data ----------------------------------
+instr_nm_r2_0001 <- instr_mr_r2_0001$chr_pos
+instr_nm_r2_001 <- instr_mr_r2_001$chr_pos
+instr_nm_r2_01 <- instr_mr_r2_01$chr_pos
 
-# 5) Align PD estimates ------------------------------------------------
-dd <- lj %>%
-  # Here I must perform the check of the alleles. The pairs are:
-  # A - G and C - T. If some of the pairs are not found, the
-  # correspondence is A = T and C = G.
+pd_df_r2_0001 <- pd_data %>%
+  filter(chr_pos %in% instr_nm_r2_0001)
+
+pd_df_r2_001 <- pd_data %>%
+  filter(chr_pos %in% instr_nm_r2_001)
+
+pd_df_r2_01 <- pd_data %>%
+  filter(chr_pos %in% instr_nm_r2_01)
+
+# 5) Join IL6 and PD data ---------------------------------------------
+lj_r2_0001 <- instr_mr_r2_0001 %>%
+  left_join(pd_df_r2_0001, by = "chr_pos")
+
+lj_r2_001 <- instr_mr_r2_001 %>%
+  left_join(pd_df_r2_001, by = "chr_pos") |>
+  filter(!is.na(beta_y))
+
+lj_r2_01 <- instr_mr_r2_01 %>%
+  left_join(pd_df_r2_01, by = "chr_pos") |>
+  filter(!is.na(beta_y))
+
+# 6) Align PD estimates ------------------------------------------------
+dd_r2_0001 <- lj_r2_0001 %>%
   mutate(
     A1_y = case_when(
       (A1_x == "C" & A2_x == "A") & (A1_y == "A" & A2_y == "C") ~ "T",
       (A1_x == "G" & A2_x == "C") & (A1_y == "C" & A2_y == "G") ~ "A",
       (A1_x == "G" & A2_x == "T") & (A1_y == "T" & A2_y == "G") ~ "A",
       (A1_x == "T" & A2_x == "A") & (A1_y == "A" & A2_y == "T") ~ "C",
+      (A1_x == "A" & A2_x == "T") & (A1_y == "T" & A2_y == "T") ~ "G",
+      (A1_x == "A" & A2_x == "C") & (A1_y == "C" & A2_y == "A") ~ "G",
       TRUE ~ A1_y
     )
   ) %>%
@@ -94,23 +162,93 @@ dd <- lj %>%
     freq_y = if_else((A1_x == A1_y), freq_y, 1 - freq_y)
   )
 
-# 6) Prepare the data for the analysis ---------------------------------
-df <- dd %>%
+dd_r2_001 <- lj_r2_001 %>%
+  mutate(
+    A1_y = case_when(
+      (A1_x == "C" & A2_x == "A") & (A1_y == "A" & A2_y == "C") ~ "T",
+      (A1_x == "G" & A2_x == "C") & (A1_y == "C" & A2_y == "G") ~ "A",
+      (A1_x == "G" & A2_x == "T") & (A1_y == "T" & A2_y == "G") ~ "A",
+      (A1_x == "T" & A2_x == "A") & (A1_y == "A" & A2_y == "T") ~ "C",
+      (A1_x == "A" & A2_x == "T") & (A1_y == "T" & A2_y == "T") ~ "G",
+      (A1_x == "A" & A2_x == "C") & (A1_y == "C" & A2_y == "A") ~ "G",
+      TRUE ~ A1_y
+    )
+  ) %>%
+  # Align the PD estimates given the exposure alleles
+  mutate(
+    beta_y = if_else((A1_x == A1_y), beta_y, -beta_y),
+    freq_y = if_else((A1_x == A1_y), freq_y, 1 - freq_y)
+  )
+
+dd_r2_01 <- lj_r2_01 %>%
+  mutate(
+    A1_y = case_when(
+      (A1_x == "C" & A2_x == "A") & (A1_y == "A" & A2_y == "C") ~ "T",
+      (A1_x == "G" & A2_x == "C") & (A1_y == "C" & A2_y == "G") ~ "A",
+      (A1_x == "G" & A2_x == "T") & (A1_y == "T" & A2_y == "G") ~ "A",
+      (A1_x == "T" & A2_x == "A") & (A1_y == "A" & A2_y == "T") ~ "C",
+      (A1_x == "A" & A2_x == "T") & (A1_y == "T" & A2_y == "T") ~ "G",
+      (A1_x == "A" & A2_x == "C") & (A1_y == "C" & A2_y == "A") ~ "G",
+      TRUE ~ A1_y
+    )
+  ) %>%
+  # Align the PD estimates given the exposure alleles
+  mutate(
+    beta_y = if_else((A1_x == A1_y), beta_y, -beta_y),
+    freq_y = if_else((A1_x == A1_y), freq_y, 1 - freq_y)
+  )
+
+# 7) Prepare the data for the analysis ---------------------------------
+df_r2_0001 <- dd_r2_0001 %>%
   dplyr::select(
     SNP, Gene, Chromosome_x, Position_x, freq_x, freq_y,
     beta_x, se_x, p_x, beta_y, se_y, p_y, A1_x, A2_x, A1_y, A2_y
   )
 
-# 7) Save the data -----------------------------------------------------
-mr_data <- list(
- "instruments_CRP" = instr_mr,
- "instruments_PD" = pd_df,
- "joined_instruments" = lj,
- "aligned_estimates" = dd,
- "mr_dataset" = df
+df_r2_001 <- dd_r2_001 %>%
+  dplyr::select(
+    SNP, Gene, Chromosome_x, Position_x, freq_x, freq_y,
+    beta_x, se_x, p_x, beta_y, se_y, p_y, A1_x, A2_x, A1_y, A2_y
+  )
+
+df_r2_01 <- dd_r2_01 %>%
+  dplyr::select(
+    SNP, Gene, Chromosome_x, Position_x, freq_x, freq_y,
+    beta_x, se_x, p_x, beta_y, se_y, p_y, A1_x, A2_x, A1_y, A2_y
+  )
+
+# 8) Retrieve LD matrices ----------------------------------------------
+ld_r2_001 <- ld_matrix(snps = df_r2_001$SNP, with_alleles = FALSE)
+ld_r2_01 <- ld_matrix(snps = df_r2_01$SNP, with_alleles = FALSE)
+
+# 9) Save the data -----------------------------------------------------
+mr_data_r2_0001 <- list(
+  "instruments_IL6" = instr_mr_r2_0001,
+  "instruments_PD" = pd_df_r2_0001,
+  "joined_instruments" = lj_r2_0001,
+  "aligned_estimates" = dd_r2_0001,
+  "mr_dataset" = df_r2_0001
+)
+
+mr_data_r2_001 <- list(
+  "instruments_IL6" = instr_mr_r2_001,
+  "instruments_PD" = pd_df_r2_001,
+  "joined_instruments" = lj_r2_001,
+  "aligned_estimates" = dd_r2_001,
+  "mr_dataset" = df_r2_001,
+  "ld_mat" = ld_r2_001
+)
+
+mr_data_r2_01 <- list(
+  "instruments_IL6" = instr_mr_r2_01,
+  "instruments_PD" = pd_df_r2_01,
+  "joined_instruments" = lj_r2_01,
+  "aligned_estimates" = dd_r2_01,
+  "mr_dataset" = df_r2_01,
+  "ld_mat" = ld_r2_01
 )
 
 save(
-  mr_data,
+  mr_data_r2_0001, mr_data_r2_001, mr_data_r2_01,
   file = here::here("ahluwalia_il6", "data", "mr_data_pd.rda")
 )

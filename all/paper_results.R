@@ -83,7 +83,7 @@ herder_results <- list(
 
 rm(primary_pd, primary_aao)
 
-# 4) TNF-alpha --------------------------------------------------------
+# 4) TNF-alpha ---------------------------------------------------------
 load(here::here("prins_tnfalpha", "analysis", "mr_results_pd.rda"))
 load(here::here("prins_tnfalpha", "analysis", "mr_results_aao.rda"))
 
